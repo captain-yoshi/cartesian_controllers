@@ -147,6 +147,12 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
     throw std::runtime_error(error);
   }
 
+  // Initialize end effector offset
+  m_end_effector_offset = KDL::Frame::Identity();
+
+  std::string spatial_pose_config = nh.getNamespace() + "/end_effector_offset";
+  m_end_effector_offset_handle.init(spatial_pose_config);
+
   // Parse joint limits
   KDL::JntArray upper_pos_limits(m_joint_names.size());
   KDL::JntArray lower_pos_limits(m_joint_names.size());
@@ -277,6 +283,20 @@ writeJointControlCmds()
   for (size_t i = 0; i < m_joint_handles.size(); ++i)
   {
     m_joint_handles[i].setCommand(m_simulated_joint_motion.velocities[i]);
+  }
+}
+
+template <class HardwareInterface>
+void CartesianControllerBase<HardwareInterface>::
+updateEndEffectorOffset()
+{
+  if(m_end_effector_offset_handle.has_new_pose())
+  {
+    m_end_effector_offset_updated = true;
+    m_end_effector_offset = m_end_effector_offset_handle.get_pose();
+  }
+  else{
+    m_end_effector_offset_updated = false;
   }
 }
 
