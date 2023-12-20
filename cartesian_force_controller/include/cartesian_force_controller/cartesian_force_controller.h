@@ -105,6 +105,18 @@ class CartesianForceController : public virtual cartesian_controller_base::Carte
     void setFtSensorReferenceFrame(const std::string& new_ref);
     void setFtSensorReferenceFrame(const std::string& new_ref, const KDL::Frame& new_ref_transform_offset);
 
+    /**
+     * @brief Publish the controller's state wrench
+     *
+     * The data are w.r.t. the specified robot base link.
+     * If this function is called after `computeJointControlCmds()` has
+     * been called, then the controller's internal state represents the state
+     * right after the error computation, and corresponds to the new target
+     * state that will be send to the actuators in this control cycle.
+     */
+    void publishStateWrenchFeedback(realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>& rt_publisher,
+                                    ctrl::Vector6D& wrench);
+
   private:
     ctrl::Vector6D        compensateGravity();
 
@@ -146,6 +158,15 @@ class CartesianForceController : public virtual cartesian_controller_base::Carte
 
     std::shared_ptr<dynamic_reconfigure::Server<Config> > m_dyn_conf_server;
     dynamic_reconfigure::Server<Config>::CallbackType m_callback_type;
+
+    realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
+      m_feedback_gravity_wrench_publisher;
+    realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
+      m_feedback_sensor_wrench_publisher;
+    realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
+      m_feedback_target_wrench_publisher;
+    realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
+      m_feedback_net_force_wrench_publisher;
 };
 
 }
