@@ -200,10 +200,19 @@ computeForceError()
     target_wrench = m_target_wrench;
   }
 
+  ctrl::Vector6D sensor_wrench;
+  sensor_wrench = Base::displayInBaseLink(m_ft_sensor_wrench,m_new_ft_sensor_ref,m_end_effector_transform_offset);
+
+  ctrl::Vector6D gravity_wrench;
+  gravity_wrench = compensateGravity();
+
   // Superimpose target wrench and sensor wrench in base frame
-  return Base::displayInBaseLink(m_ft_sensor_wrench,m_new_ft_sensor_ref,m_end_effector_transform_offset)
+  ctrl::Vector6D net_force_wrench;
+  net_force_wrench = sensor_wrench
     + target_wrench
-    + compensateGravity();
+    + gravity_wrench;
+
+  return net_force_wrench;
 }
 
 template <class HardwareInterface>
