@@ -43,6 +43,7 @@
 // ROS
 #include <ros/node_handle.h>
 #include <trajectory_msgs/JointTrajectoryPoint.h>
+#include <sensor_msgs/JointState.h>
 #include <geometry_msgs/WrenchStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
@@ -220,6 +221,8 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
     std::shared_ptr<dynamic_reconfigure::Server<ControllerConfig> > m_dyn_conf_server;
     dynamic_reconfigure::Server<ControllerConfig>::CallbackType m_callback_type;
 
+    realtime_tools::RealtimePublisherSharedPtr<sensor_msgs::JointState>
+      m_feedback_joint_command_publisher;
     realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::PoseStamped>
       m_feedback_pose_publisher;
     realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::TwistStamped>

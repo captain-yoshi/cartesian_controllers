@@ -186,6 +186,20 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
   m_spatial_controller.init(nh);
 
   // Controller-internal state publishing
+  m_feedback_joint_command_publisher =
+  std::make_shared<realtime_tools::RealtimePublisher<sensor_msgs::JointState> >(
+    nh, "command", 3);
+
+  m_feedback_joint_command_publisher->msg_.name.resize(m_joint_names.size());
+  m_feedback_joint_command_publisher->msg_.position.resize(m_joint_names.size());
+  // Get the joint handles to use in the control loop
+  for (size_t i = 0; i < m_joint_names.size(); ++i)
+  {
+    m_feedback_joint_command_publisher->msg_.name[i] = m_joint_names[i];
+  }
+
+
+
   m_feedback_pose_publisher =
     std::make_shared<realtime_tools::RealtimePublisher<geometry_msgs::PoseStamped> >(
       nh, "current_pose", 3);
@@ -379,6 +393,19 @@ template <class HardwareInterface>
 void CartesianControllerBase<HardwareInterface>::
 publishStateFeedback()
 {
+
+  // Position command
+  if (m_feedback_joint_command_publisher->trylock()){
+    m_feedback_joint_command_publisher->msg_.header.stamp = ros::Time::now();
+    m_feedback_joint_command_publisher->msg_.header.frame_id = m_robot_base_link;
+
+    for (size_t i = 0; i < m_joint_handles.size(); ++i)
+    {
+     m_feedback_joint_command_publisher->msg_.position[i]  = m_simulated_joint_motion.positions[i];
+    }
+    m_feedback_joint_command_publisher->unlockAndPublish();
+  }
+
   // End-effector pose
   auto pose = m_ik_solver->getEndEffectorPose();
   if (m_feedback_pose_publisher->trylock()){
