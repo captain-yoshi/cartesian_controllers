@@ -115,7 +115,7 @@ class CartesianForceController : public virtual cartesian_controller_base::Carte
      * state that will be send to the actuators in this control cycle.
      */
     void publishStateWrenchFeedback(realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>& rt_publisher,
-                                    ctrl::Vector6D& wrench);
+                                    ctrl::Vector6D& wrench, const std::string& frame_id);
 
   private:
     ctrl::Vector6D        compensateGravity();

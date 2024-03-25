@@ -235,10 +235,15 @@ computeForceError()
   // Publish wrench state feedback
   if (Base::m_publish_state_feedback)
   {
-    publishStateWrenchFeedback(m_feedback_sensor_wrench_publisher, sensor_wrench);
-    publishStateWrenchFeedback(m_feedback_target_wrench_publisher, target_wrench);
-    publishStateWrenchFeedback(m_feedback_gravity_wrench_publisher, gravity_wrench);
-    publishStateWrenchFeedback(m_feedback_net_force_wrench_publisher, net_force_wrench);
+    // wrt. the tip link + offset
+    ctrl::Vector6D sensor_wrench_end_effector = Base::displayInTipLink(sensor_wrench,Base::m_end_effector_link, m_end_effector_transform_offset);
+    publishStateWrenchFeedback(m_feedback_sensor_wrench_eef_publisher, sensor_wrench_end_effector, Base::m_end_effector_link);
+
+    // wrt. the base link
+    publishStateWrenchFeedback(m_feedback_sensor_wrench_publisher, sensor_wrench, Base::m_robot_base_link);
+    publishStateWrenchFeedback(m_feedback_target_wrench_publisher, target_wrench, Base::m_robot_base_link);
+    publishStateWrenchFeedback(m_feedback_gravity_wrench_publisher, gravity_wrench, Base::m_robot_base_link);
+    publishStateWrenchFeedback(m_feedback_net_force_wrench_publisher, net_force_wrench, Base::m_robot_base_link);
   }
 
   return net_force_wrench;
@@ -360,11 +365,11 @@ signalTaringCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Respons
 template <class HardwareInterface>
 void CartesianForceController<HardwareInterface>::
 publishStateWrenchFeedback(realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>& rt_publisher,
-                           ctrl::Vector6D& wrench)
+                           ctrl::Vector6D& wrench, const std::string& frame_id)
 {
   if (rt_publisher->trylock()){
     rt_publisher->msg_.header.stamp = ros::Time::now();
-    rt_publisher->msg_.header.frame_id = Base::m_robot_base_link;
+    rt_publisher->msg_.header.frame_id = frame_id;
     rt_publisher->msg_.wrench.force.x = wrench[0];
     rt_publisher->msg_.wrench.force.y = wrench[1];
     rt_publisher->msg_.wrench.force.z = wrench[2];
