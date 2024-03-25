@@ -172,7 +172,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
 
     std::shared_ptr<KDL::TreeFkSolverPos_recursive> m_forward_kinematics_solver;
 
-    const KDL::Frame m_identity_transform_kdl;
+    static const KDL::Frame m_identity_transform_kdl;
 
     /**
      * @brief Allow users to choose the IK solver type on startup
