@@ -147,7 +147,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
      *
      * @return The quantity in the new frame
      */
-    ctrl::Vector6D displayInTipLink(const ctrl::Vector6D& vector, const std::string& to);
+    ctrl::Vector6D displayInTipLink(const ctrl::Vector6D& vector, const std::string& to, const KDL::Frame& to_offset);
 
     /**
      * @brief Check if specified links are part of the robot chain
@@ -172,7 +172,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
 
     std::shared_ptr<KDL::TreeFkSolverPos_recursive> m_forward_kinematics_solver;
 
-    static const KDL::Frame m_identity_transform_kdl;
+    const KDL::Frame m_identity_transform_kdl = KDL::Frame::Identity();
 
     /**
      * @brief Allow users to choose the IK solver type on startup

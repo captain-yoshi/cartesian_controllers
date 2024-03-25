@@ -283,7 +283,7 @@ compensateGravity()
   ctrl::Vector6D compensating_force = ctrl::Vector6D::Zero();
 
   // Compute actual gravity effects in sensor frame
-  ctrl::Vector6D tmp = Base::displayInTipLink(m_weight_force,m_ft_sensor_ref_link);
+  ctrl::Vector6D tmp = Base::displayInTipLink(m_weight_force,m_ft_sensor_ref_link, Base::m_identity_transform_kdl);
   tmp.tail<3>() = m_center_of_mass.cross(tmp.head<3>()); // M = r x F
 
   // Display in base link
@@ -338,7 +338,7 @@ bool CartesianForceController<HardwareInterface>::
 signalTaringCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
 {
   // Compute current gravity effects in sensor frame
-  ctrl::Vector6D tmp = Base::displayInTipLink(m_weight_force,m_ft_sensor_ref_link);
+  ctrl::Vector6D tmp = Base::displayInTipLink(m_weight_force,m_ft_sensor_ref_link, Base::m_identity_transform_kdl);
   tmp.tail<3>() = m_center_of_mass.cross(tmp.head<3>()); // M = r x F
 
   // Taring the sensor is like adding a virtual force that exactly compensates
