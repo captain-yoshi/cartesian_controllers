@@ -130,6 +130,10 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
     std::make_shared<realtime_tools::RealtimePublisher<geometry_msgs::WrenchStamped> >(
       nh, "current_net_force_wrench", 3);
 
+  m_feedback_sensor_wrench_eef_publisher =
+    std::make_shared<realtime_tools::RealtimePublisher<geometry_msgs::WrenchStamped> >(
+      nh, "current_sensor_wrench_eef", 3);
+
   // Initialize spatial pose for end effector transform offset
   std::string spatial_pose_config = nh.getNamespace() + "/end_effector_transform_offset";
   m_pose_parameter_handle.init(spatial_pose_config);

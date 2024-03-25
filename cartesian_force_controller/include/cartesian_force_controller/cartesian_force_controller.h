@@ -167,6 +167,9 @@ class CartesianForceController : public virtual cartesian_controller_base::Carte
       m_feedback_target_wrench_publisher;
     realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
       m_feedback_net_force_wrench_publisher;
+
+    realtime_tools::RealtimePublisherSharedPtr<geometry_msgs::WrenchStamped>
+      m_feedback_sensor_wrench_eef_publisher;
 };
 
 }
