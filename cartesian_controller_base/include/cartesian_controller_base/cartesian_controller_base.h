@@ -167,6 +167,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
     }
 
     KDL::Chain m_robot_chain;
+    KDL::Chain m_robot_offset_chain;
 
     std::shared_ptr<KDL::TreeFkSolverPos_recursive> m_forward_kinematics_solver;
 
@@ -176,7 +177,10 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
     std::shared_ptr<pluginlib::ClassLoader<IKSolver> > m_solver_loader;
     std::shared_ptr<IKSolver> m_ik_solver;
 
+    ros::NodeHandle m_nh;
+
     std::string m_end_effector_link;
+    std::string m_end_effector_offset_link;
     std::string m_robot_base_link;
 
     int m_iterations;

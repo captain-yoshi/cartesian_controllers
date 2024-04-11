@@ -72,6 +72,8 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
     return true;
   }
 
+  m_nh = nh;
+
   // Load user specified inverse kinematics solver
   std::string ik_solver = "forward_dynamics"; // Default
   nh.getParam("ik_solver", ik_solver);
@@ -217,6 +219,27 @@ void CartesianControllerBase<HardwareInterface>::
 starting(const ros::Time& time)
 {
   // Copy joint state to internal simulation
+  m_ik_solver->setStartState(m_joint_handles);
+  m_ik_solver->updateKinematics();
+
+  // Update end effector offset
+  updateEndEffectorOffset();
+
+
+  // Create new chain with tip offset
+  m_end_effector_offset_link = "eef_offset";
+  KDL::Segment tip_offset = KDL::Segment(m_end_effector_offset_link, KDL::Joint(KDL::Joint::None),
+                                             m_end_effector_offset);
+
+  m_robot_offset_chain = KDL::Chain();
+  m_robot_offset_chain.addChain(m_robot_chain);
+  m_robot_offset_chain.addSegment(tip_offset);
+
+  // Reinitialize ik solver with tip chain
+  auto upper_pos_limits = m_ik_solver->getUpperPositionLimits();
+  auto lower_pos_limits = m_ik_solver->getLowerPositionLimits();
+
+  m_ik_solver->init(m_nh, m_robot_offset_chain,upper_pos_limits,lower_pos_limits);
   m_ik_solver->setStartState(m_joint_handles);
   m_ik_solver->updateKinematics();
 
