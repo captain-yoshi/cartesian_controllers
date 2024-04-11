@@ -77,6 +77,10 @@ class IKSolver
     IKSolver();
     virtual ~IKSolver();
 
+    KDL::JntArray getUpperPositionLimits();
+    KDL::JntArray getLowerPositionLimits();
+
+
     /**
      * @brief Compute joint target commands, using specific IK algorithms
      *

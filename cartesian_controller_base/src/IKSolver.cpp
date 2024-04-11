@@ -128,6 +128,16 @@ namespace cartesian_controller_base{
     return true;
   }
 
+  KDL::JntArray IKSolver::getUpperPositionLimits()
+  {
+    return m_upper_pos_limits;
+  }
+
+  KDL::JntArray IKSolver::getLowerPositionLimits()
+  {
+    return m_lower_pos_limits;
+  }
+
   void IKSolver::updateKinematics()
   {
     // Pose w. r. t. base
