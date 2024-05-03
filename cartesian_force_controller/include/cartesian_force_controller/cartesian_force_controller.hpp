@@ -148,6 +148,8 @@ template <class HardwareInterface>
 void CartesianForceController<HardwareInterface>::
 starting(const ros::Time& time)
 {
+  m_target_wrench.setZero();
+  m_ft_sensor_wrench.setZero();
   Base::starting(time);
 }
 
