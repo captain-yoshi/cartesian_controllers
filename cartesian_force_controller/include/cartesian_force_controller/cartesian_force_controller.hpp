@@ -279,6 +279,9 @@ template <class HardwareInterface>
 void CartesianForceController<HardwareInterface>::
 targetWrenchCallback(const geometry_msgs::WrenchStamped& wrench)
 {
+  if(!Base::isRunning())
+    return;
+
   m_target_wrench[0] = wrench.wrench.force.x;
   m_target_wrench[1] = wrench.wrench.force.y;
   m_target_wrench[2] = wrench.wrench.force.z;
@@ -291,6 +294,9 @@ template <class HardwareInterface>
 void CartesianForceController<HardwareInterface>::
 ftSensorWrenchCallback(const geometry_msgs::WrenchStamped& wrench)
 {
+  if(!Base::isRunning())
+    return;
+
   KDL::Wrench tmp;
   tmp[0] = wrench.wrench.force.x;
   tmp[1] = wrench.wrench.force.y;
