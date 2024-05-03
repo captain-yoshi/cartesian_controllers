@@ -82,8 +82,8 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
   setFtSensorReferenceFrame(Base::m_end_effector_link);
 
   m_signal_taring_server = nh.advertiseService("signal_taring",&CartesianForceController<HardwareInterface>::signalTaringCallback,this);
-  m_target_wrench_subscriber = nh.subscribe("target_wrench",2,&CartesianForceController<HardwareInterface>::targetWrenchCallback,this);
-  m_ft_sensor_wrench_subscriber = nh.subscribe("ft_sensor_wrench",2,&CartesianForceController<HardwareInterface>::ftSensorWrenchCallback,this);
+  m_target_wrench_subscriber = nh.subscribe("target_wrench",1,&CartesianForceController<HardwareInterface>::targetWrenchCallback,this);
+  m_ft_sensor_wrench_subscriber = nh.subscribe("ft_sensor_wrench",1,&CartesianForceController<HardwareInterface>::ftSensorWrenchCallback,this);
 
   // Initialize tool and gravity compensation
   std::map<std::string, double> gravity;
